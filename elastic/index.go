@@ -21,7 +21,7 @@ func main() {
 	ctx := context.Background()
 	client, err := elastic.NewClient(
 		elastic.SetSniff(true),
-		elastic.SetURL("https://es.sand.cuebiq.ai:443"),
+		elastic.SetURL("https://elastic:443"),
 		elastic.SetHealthcheckInterval(5*time.Second),
 	)
 	if err != nil {
