@@ -12,7 +12,9 @@ var wg sync.WaitGroup
 // main is the entry point for all Go programs.
 func main() {
 	// Allocate 1 logical processors for the scheduler to use.
-	runtime.GOMAXPROCS(runtime.NumCPU())
+	num := runtime.NumCPU()
+	fmt.Printf("Detected %d CPUs\n", num)
+	runtime.GOMAXPROCS(num)
 
 	// Add a count of two, one for each goroutine.
 	wg.Add(2)
