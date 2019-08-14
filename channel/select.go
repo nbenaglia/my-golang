@@ -23,6 +23,6 @@ func main() {
 			fmt.Println(<-c)
 		}
 		quit <- 0
-	}()
+	}() // the () is the function invocation operator
 	fibonacci(c, quit)
 }
