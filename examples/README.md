@@ -1,4 +1,12 @@
-# Notes
+# Misc examples
+
+Some of them taken from:
+
+- https://github.com/goinaction/code
+- https://github.com/sausheong/gwp
+
+
+## Notes
 
 To test HTTP requests you should use the cURL command.
 
