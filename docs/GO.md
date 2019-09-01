@@ -17,7 +17,6 @@ Some notable open-source applications written in Go include:
 - OpenShift, a cloud computing platform as a service by Red Hat
 - Terraform, an open-source, multiple cloud infrastructure provisioning tool from HashiCorp.
 
-
 Go isn’t considered a functional language, but it has some features that are common to functional languages, including:
 
 - function types
