@@ -1,4 +1,4 @@
-module pollo
+module server
 
 go 1.12
 
