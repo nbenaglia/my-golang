@@ -8,30 +8,24 @@ import (
 )
 
 type (
-	// gResult maps to the result document received from the search.
 	gResult struct {
-		GsearchResultClass string `json:"GsearchResultClass"`
-		UnescapedURL       string `json:"unescapedUrl"`
-		URL                string `json:"url"`
-		VisibleURL         string `json:"visibleUrl"`
-		CacheURL           string `json:"cacheUrl"`
-		Title              string `json:"title"`
-		TitleNoFormatting  string `json:"titleNoFormatting"`
-		Content            string `json:"content"`
-	}
-
-	// gResponse contains the top level document.
-	gResponse struct {
-		ResponseData struct {
-			Results []gResult `json:"results"`
-		} `json:"responseData"`
+		Ip         string  `json:"ip"`
+		IpDecimal  int     `json:"ip_decimal"`
+		Country    string  `json:"country"`
+		CountryEu  bool    `json:"country_eu"`
+		CountryIso string  `json:"country_iso"`
+		City       string  `json:"title"`
+		Hostname   string  `json:"hostname"`
+		Latitude   float32 `json:"latitude"`
+		Longitude  float32 `json:"longitude"`
+		Asn        string  `json:"asn"`
+		AsnOrg     string  `json:"asn_org"`
 	}
 )
 
 func main() {
-	uri := "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=golang"
+	uri := "https://ifconfig.co/json"
 
-	// Issue the search against Google.
 	resp, err := http.Get(uri)
 	if err != nil {
 		log.Println("ERROR:", err)
@@ -40,18 +34,17 @@ func main() {
 	defer resp.Body.Close()
 
 	// Decode the JSON response into our struct type.
-	var gr gResponse
-	err = json.NewDecoder(resp.Body).Decode(&gr)
+	var result gResult
+	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		log.Println("ERROR:", err)
 		return
 	}
 
-	fmt.Println(gr)
+	fmt.Println(result)
 
-	// Marshal the struct type into a pretty print
-	// version of the JSON document.
-	pretty, err := json.MarshalIndent(gr, "", "    ")
+	// Marshal the struct type into a pretty print version of the JSON document.
+	pretty, err := json.MarshalIndent(result, "", "    ")
 	if err != nil {
 		log.Println("ERROR:", err)
 		return
