@@ -92,6 +92,17 @@ Two ways:
    ```./main```
 
 ---
+## Concurrency
+
+Go uses the concurrency model called Communicating Sequential Processes (CSP).
+
+Two crucial concepts:
+
+- Goroutines: function that runs independently of the function that started it. 
+
+- Channels: pipeline for sending and receiving data. They provide a way for one goroutine to send structured data to another.
+
+---
 
 ## References
 
