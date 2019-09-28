@@ -4,7 +4,7 @@ Some of them taken from:
 
 - https://github.com/goinaction/code
 - https://github.com/sausheong/gwp
-
+- https://github.com/Masterminds/go-in-practice
 
 ## Notes
 
