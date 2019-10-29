@@ -5,6 +5,8 @@ import (
 	"net"
 )
 
+// Listen with command:  `nc -lkp 1902`
+
 func main() {
 
 	conn, err := net.Dial("tcp", "localhost:1902")
