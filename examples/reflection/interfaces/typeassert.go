@@ -7,13 +7,10 @@ import (
 
 func main() {
 	b := bytes.NewBuffer([]byte("Hello"))
-	if isStringer(b) {
-		fmt.Printf("%T is a stringer\n", b)
-	}
+	fmt.Printf("%T is a %t stringer\n", b, isStringer(b))
+
 	i := 123
-	if isStringer(i) {
-		fmt.Printf("%T is a stringer\n", i)
-	}
+	fmt.Printf("%T is a %t stringer\n", i, isStringer(i))
 }
 
 func isStringer(v interface{}) bool {
