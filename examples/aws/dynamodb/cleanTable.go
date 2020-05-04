@@ -1,7 +1,8 @@
 package main
 
 import (
-	"fmt"
+	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
+	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -10,24 +11,44 @@ import (
 )
 
 type workingInfo struct {
-	tableName    *string
-	safeAccounts []string
+	tableName   *string
+	role 		*string
+	region 		*string
 }
 
 func main() {
-	// Initialize a session that the SDK will use to load
-	// credentials from the shared credentials file ~/.aws/credentials
-	// and region from the shared configuration file ~/.aws/config.
-	session := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-
-	info := workingInfo{tableName: aws.String("UserOrdersTable")}
+	info := workingInfo{
+		tableName: aws.String("UserOrderTable"),
+		role: aws.String("arn:aws:iam::<ACCOUNT_NUMBER>:role/myrole"),
+		region: aws.String("eu-west-1"),
+	}
 
 	// Create DynamoDB client
-	service := dynamodb.New(session)
+	service, err := getDynamoClient(info.role, info.region)
+	if err != nil {
+		log.Println("Got error calling dynamoClient")
+		log.Println(err.Error())
+		return
+	}
 	describeTable(service, &info)
 	//delete(service, &info)
+}
+
+func getDynamoClient(roleArn *string, region *string) (*dynamodb.DynamoDB, error) {
+	log.Printf("Initializing new dynamo client for role %s", *roleArn)
+
+	if *roleArn == "" {
+		sess := session.Must(session.NewSession())
+		client := dynamodb.New(sess, &aws.Config{Region: region})
+		return client, nil
+	}
+
+	sess := session.Must(session.NewSession())
+	credentials := stscreds.NewCredentials(sess, *roleArn)
+	client := dynamodb.New(sess, &aws.Config{Credentials: credentials, Region: region})
+
+	log.Printf("Client is %s", client.ServiceName)
+	return client, nil
 }
 
 func keys(info *workingInfo) {
@@ -53,23 +74,23 @@ func delete(service *dynamodb.DynamoDB, info *workingInfo) {
 
 	_, err := service.DeleteItem(input)
 	if err != nil {
-		fmt.Println("Got error calling DeleteItem")
-		fmt.Println(err.Error())
+		log.Println("Got error calling DeleteItem")
+		log.Println(err.Error())
 		return
 	}
-	fmt.Printf("Delete executed.")
+	log.Printf("Delete executed.")
 }
 
 func describeTable(service *dynamodb.DynamoDB, info *workingInfo) ([]*dynamodb.KeySchemaElement, error) {
 	describeInput := &dynamodb.DescribeTableInput{TableName: info.tableName}
 	table, err := service.DescribeTable(describeInput)
 	if err != nil {
-		fmt.Println("Got error calling DescribeTable")
-		fmt.Println(err.Error())
+		log.Println("Got error calling DescribeTable")
+		log.Println(err.Error())
 		return nil, err
 	}
-	fmt.Printf("Items %d\n", table.Table.ItemCount)
-	fmt.Printf("Creation date %s\n", table.Table.CreationDateTime.Format("2006-01-02T15:04:05"))
+	log.Printf("Items %d\n", table.Table.ItemCount)
+	log.Printf("Creation date %s\n", table.Table.CreationDateTime.Format("2006-01-02T15:04:05"))
 	return table.Table.KeySchema, nil
 }
 
